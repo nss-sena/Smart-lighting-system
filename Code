@@ -1,0 +1,78 @@
+;
+; Test99.asm
+;
+; Created: 28/11/2022 18:03:52
+; Author : Nimesh Senanayake
+;
+
+.ORG 0x00
+JMP MAIN
+MAIN:
+	LDI	R20,HIGH(RAMEND);Initialize stack
+	OUT	SPH,R20
+	LDI	R20,LOW(RAMEND)
+	OUT	SPL,R20			;Initialize stack
+
+	LDI R16,0			;Declaring i/p, o/p , memory registers
+	LDI R19,0x00
+	OUT DDRB,R19
+	OUT DDRC,R19
+	LDI R19,0xFF
+	OUT DDRD,R19
+
+
+LDR:					;LDR part
+L1: SBIS PINC, 0  		; LDR value HIGH, light turned off
+    RJMP L2
+    CBI PORTD, 0 ; 
+    RJMP L1
+L2:					    ;light has to be turned on
+    NOP 
+
+LOOP1: IN R18,PINB		;Increment part
+	CPI R18,1
+	BRNE INC1
+	INC R16
+
+INC1: OUT PORTD,R16		;  Displaying the number of people in the room
+
+LOOP2: IN R18,PINB		;Decrement part
+	CPI R18,0
+	BRNE LOOP2
+	IN R18,PINC
+	CPI R18,1
+	BRNE DEC1
+	DEC R16
+
+DEC1: OUT PORTD,R16		; Displaying the decremnt
+
+LOOP3: IN R18,PINC
+	CPI R18,0
+	BRNE LOOP3
+	JMP LOOP1
+
+/*
+;pwm
+	LDI R21, 1<<COM0A1|1<<WGM01|1<<WGM00
+	OUT TCCR0A, R18
+	LDI R22,1<<CS00
+	OUT TCCR0B, R22
+	*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
